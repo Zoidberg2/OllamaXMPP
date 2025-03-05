@@ -14,7 +14,7 @@ The script supports multiple communication methods:
 ---
 
 ## Usage
-Edit the botconf.ini with your parameters(credentials for the XMPP server, prefered paths etc...).
+Edit the botconfig.ini with your parameters(credentials for the XMPP server, prefered paths etc...).
 To run the script, simply execute:
 
 ```bash
