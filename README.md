@@ -46,5 +46,5 @@ pip install langchain_ollama slixmpp slixmpp-omemo python-gnupg
 ### Special Thanks to
 Mr Dele Olajide https://github.com/deleolajide, who inspired me the idea of a LLM XMPP connection with his Openfire Llama plugin.<br>      
 Slixmpp team https://codeberg.org/poezio/slixmpp, for creating and maintaining the slixmpp project. <br>
-Syndance https://github.com/Syndace, for the slixmpp-omemo plugin. <br>
+Syndace https://github.com/Syndace, for the slixmpp-omemo plugin. <br>
 Holger Weiss https://github.com/weiss, for helping me understand better XMPP specs. <br>
