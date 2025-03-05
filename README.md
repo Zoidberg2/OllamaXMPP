@@ -14,12 +14,12 @@ The script supports multiple communication methods:
 ---
 
 ## Usage
-Edit the botconfig.ini with the parameters
-Credentials for the XMPP server(JID and Password),
-allowed_users = The code will only allow those on this list to interact with the Ollama model.
-keys_directory = Any path that is writable for the user running the script. The code is supposed to generate a new key and place the public key here. 
-contacts_keys_directory = Any path that is writable for the user running the script. The code will automatically store the public keys of the contacts here.
-To run the script, simply execute:
+Edit the botconfig.ini with the parameters<br>
+1.Credentials for the XMPP server(JID and Password),<br>
+2.allowed_users = The code will only allow those on this list to interact with the Ollama model.<br>
+3.keys_directory = Any path that is writable for the user running the script. The code is supposed to generate a new openPGP key and place the public key here.<br> 
+4.contacts_keys_directory = Any path that is writable for the user running the script. The code will automatically store the public keys of the contacts here.<br>
+To run the script, simply execute:<br>
 
 ```bash
 python3 ollamaxmpp.py
@@ -31,7 +31,7 @@ For OpenPGP setup(Client side):
 3. The bot will respond with its own keys.
 
 ---
-
+                
 ## Installation
 
 ### Prerequisites
@@ -44,7 +44,7 @@ Install the required libraries using pip:
 pip install langchain_ollama slixmpp slixmpp-omemo python-gnupg
 ```
 ### Special Thanks to
-Mr Dele Olajide https://github.com/deleolajide, who inspired me the idea of a LLM XMPP connection with his Openfire Llama plugin.
-Slixmpp team https://codeberg.org/poezio/slixmpp, for creating and maintaining the slixmpp project
-Syndance https://github.com/Syndace, for the slixmpp-omemo Plugin
-Holger Weiss https://github.com/weiss, for helping me understand better XMPP specs. 
+Mr Dele Olajide https://github.com/deleolajide, who inspired me the idea of a LLM XMPP connection with his Openfire Llama plugin.<br>      
+Slixmpp team https://codeberg.org/poezio/slixmpp, for creating and maintaining the slixmpp project. <br>
+Syndance https://github.com/Syndace, for the slixmpp-omemo plugin. <br>
+Holger Weiss https://github.com/weiss, for helping me understand better XMPP specs. <br>
