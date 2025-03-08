@@ -419,7 +419,7 @@ class OllamaEncrypted(ClientXMPP):
                     muc_room = stanza["from"]
                     logging.debug(f"MUC room: {muc_room}")
                     room_jid = stanza["from"].bare
-                    prompt += user_input
+                    prompt += f"\nUser: {user_input}"
                     logging.debug(f"{user_input}: {prompt}")
                     response = self.llm.invoke(prompt, config=config)
                     if response:
@@ -456,7 +456,7 @@ class OllamaEncrypted(ClientXMPP):
 
                 elif mtype == "chat":
                     user_input = decrypted_message.get("body", "")
-                    prompt += user_input
+                    prompt += f"\nUser: {user_input}"
                     mfrom = stanza["from"]
                     logging.debug(f"Conversation history for user {mfrom}: {prompt}")
                     response = self.llm.invoke(prompt, config=config)
