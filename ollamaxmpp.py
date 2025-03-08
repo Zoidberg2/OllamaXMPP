@@ -56,7 +56,16 @@ def create_dummy_config():
     }
     config['llm'] = {
         'model': 'deepseek-r1:7b',
-        'prompt': 'You are a very helpful assistant, you are a conversational AI model. You will be having a conversation with an user.'
+        'prompt': 'You are a very helpful assistant, you are a conversational AI model. You will be having a conversation with an user.',
+        'device': 'gpu',
+        'num_gpu': '1',
+        'num_thread': '8',
+        'batch_size': '32',
+        'quantization_mode': 'int8',
+        'cache_type': 'redis',
+        'cache_capacity': '10gb',
+        'compute_type': 'float16',
+        'tensor_parallel': 'True'
     }
 
     with open('botconfig.ini', 'w') as configfile:
@@ -340,23 +349,32 @@ class OllamaEncrypted(ClientXMPP):
         return affiliations
 
     async def message_handler(self, stanza: Message) -> None:
+        config = ConfigParser()
+        config.read('botconfig.ini')
         config = {
-            "device": "gpu",
-            "num_gpu": 1,
-            "num_thread": 8,
-            "batch_size": 32,
+            "model": config.get('llm', 'model'),
+            "prompt": config.get('llm', 'prompt'),
+            "device": {
+            "device": config.get('llm', 'device'),
+                "num_gpu": config.getint('llm', 'num_gpu'),
+                "num_thread": config.getint('llm', 'num_thread')
+                },
+            "batch": {
+                "batch_size": config.getint('llm', 'batch_size')
+                },
             "quantization": {
-                "mode": "int8"
-            },
+                "mode": config.get('llm', 'quantization_mode')
+                },
             "cache": {
-                "type": "redis",
-                "capacity": "10gb"
-            },
+                "type": config.get('llm', 'cache_type'),
+                "capacity": config.get('llm', 'cache_capacity')
+                },
             "runtime": {
-                "compute_type": "float16",
-                "tensor_parallel": True
-            }
-        }
+                "compute_type": config.get('llm', 'compute_type'),
+                "tensor_parallel": config.getboolean('llm', 'tensor_parallel')
+                }
+            }        
+        
         if stanza["id"] in self.sent_message_ids:
             return
 
