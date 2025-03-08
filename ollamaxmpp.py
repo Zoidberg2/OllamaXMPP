@@ -438,6 +438,7 @@ class OllamaEncrypted(ClientXMPP):
 
                 elif mtype == "chat":
                     user_input = decrypted_message.get("body", "")
+                    prompt += user_input
                     mfrom = stanza["from"]
                     logging.debug(f"Conversation history for user {mfrom}: {prompt}")
                     response = self.llm.invoke(prompt, config=config)
