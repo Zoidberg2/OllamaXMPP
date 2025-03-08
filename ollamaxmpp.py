@@ -239,6 +239,7 @@ class OllamaEncrypted(ClientXMPP):
     async def start(self, _event: Any) -> None:
         self.send_signed_presence()
         muc_jid = self.room
+        self.add_event_handler("disconnected", self.on_disconnect)
         self.affiliations = await self.get_muc_affiliations(muc_jid)
         logging.info(f"Affiliations in {muc_jid}: {self.affiliations}")
 
@@ -275,7 +276,11 @@ class OllamaEncrypted(ClientXMPP):
         except Exception as e:
             logging.error(f"Error joining MUC room: {e}")
 
-
+    async def on_disconnect(self, event):
+        print("Bot disconnected, retrying in 10 seconds...")
+        await asyncio.sleep(10)
+        await self.connect()
+     
     async def get_muc_affiliations(self, muc_jid):
         """Retrieve the affiliations from a MUC room."""
         owner_list = []
