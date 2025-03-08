@@ -26,8 +26,8 @@ python3 ollamaxmpp.py
 ```
 
 For OpenPGP setup(Client side):
-1. Copy your public key as plaintext.
-2. Send it to the bot in a chat window.
+1. Copy your public key as plaintext.(the bot will not deal with files).
+2. Send it to the bot in a chat window.(Also as a plaintext).
 3. The bot will respond with its own keys.
 
 ---
