@@ -244,7 +244,7 @@ class OllamaEncrypted(ClientXMPP):
         self.keypasswd = keypasswd
         register_stanza_plugin(slixmpp.Message, Encrypted)
         register_stanza_plugin(slixmpp.Message, EncryptionInfo)
-
+        self.register_plugin('xep_0172')
     async def start(self, _event: Any) -> None:
         self.send_signed_presence()
         muc_jid = self.room
