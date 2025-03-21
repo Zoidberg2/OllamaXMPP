@@ -12,7 +12,21 @@ The script supports multiple communication methods:
 - **OpenPGP** (XEP-0027, tested with Conversations).
 
 ---
+               
+## Installation
+It is advisable to install the dependencies and run the code in a Python virtual environment for isolation. 
+### Prerequisites
+Ensure Python is installed on your system. You can download it from [Python.org](https://www.python.org/).
 
+### Dependencies
+Install the required libraries using pip:
+
+```bash
+pip install langchain_ollama slixmpp-omemo python-gnupg
+```
+```bash
+pip install slixmpp==1.8.6
+```
 ## Usage
 Edit the botconfig.ini with the parameters<br>
 1.Credentials for the XMPP server(JID and Password),<br>
@@ -31,21 +45,7 @@ For OpenPGP setup(Client side):
 3. The bot will respond with its own keys.
 
 ---
-                
-## Installation
-It is advisable to install the dependencies and run the code in a Python virtual environment for isolation. 
-### Prerequisites
-Ensure Python is installed on your system. You can download it from [Python.org](https://www.python.org/).
 
-### Dependencies
-Install the required libraries using pip:
-
-```bash
-pip install langchain_ollama slixmpp-omemo python-gnupg
-```
-```bash
-pip install slixmpp==1.8.6
-```
 ### Known issues
 This code is only tested with slixmpp 1.8.6.<br>
 As of yet you gonna need to manually create the directories for keys and contact keys.
