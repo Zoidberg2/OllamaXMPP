@@ -47,8 +47,8 @@ pip install langchain_ollama slixmpp-omemo python-gnupg
 pip install slixmpp==1.8.6
 ```
 ### Known issues
-This code is only tested with slixmpp 1.8.6.
-As of now you gonna need to manually create the directories for keys and contact keys.
+This code is only tested with slixmpp 1.8.6.<br>
+As of yet you gonna need to manually create the directories for keys and contact keys.
 
 ### Special Thanks to
 Mr Dele Olajide https://github.com/deleolajide, who inspired me the idea of a LLM XMPP connection with his Openfire Llama plugin.<br>      
