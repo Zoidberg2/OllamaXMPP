@@ -33,7 +33,7 @@ For OpenPGP setup(Client side):
 ---
                 
 ## Installation
-
+It is advisable to install the dependencies and run the code in a Python virtual environment for isolation. 
 ### Prerequisites
 Ensure Python is installed on your system. You can download it from [Python.org](https://www.python.org/).
 
@@ -41,10 +41,18 @@ Ensure Python is installed on your system. You can download it from [Python.org]
 Install the required libraries using pip:
 
 ```bash
-pip install langchain_ollama slixmpp slixmpp-omemo python-gnupg
+pip install langchain_ollama slixmpp-omemo python-gnupg
 ```
+```bash
+pip install slixmpp==1.8.6
+```
+### Known issues
+This code is only tested with slixmpp 1.8.6.
+As of now you gonna need to manually create the directories for keys and contact keys.
+
 ### Special Thanks to
 Mr Dele Olajide https://github.com/deleolajide, who inspired me the idea of a LLM XMPP connection with his Openfire Llama plugin.<br>      
 Slixmpp team https://codeberg.org/poezio/slixmpp, for creating and maintaining the slixmpp project. <br>
 Syndace https://github.com/Syndace, for the slixmpp-omemo plugin. <br>
 Holger Weiss https://github.com/weiss, for helping me understand better XMPP specs. <br>
+
