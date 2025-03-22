@@ -22,10 +22,7 @@ Ensure Python is installed on your system. You can download it from [Python.org]
 Install the required libraries using pip:
 
 ```bash
-pip install langchain_ollama slixmpp-omemo python-gnupg
-```
-```bash
-pip install slixmpp==1.8.6
+pip install langchain_ollama slixmpp-omemo python-gnupg slixmpp==1.8.6
 ```
 ## Usage
 Edit the botconfig.ini with the parameters<br>
