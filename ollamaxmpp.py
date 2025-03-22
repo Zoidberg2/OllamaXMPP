@@ -221,7 +221,13 @@ class OllamaEncrypted(ClientXMPP):
 
     def __init__(self, jid, password, room, nick, allowed_users, openpgp_key, fingerprint) -> None:
         super().__init__(jid, password)
-        self.allowed_users = allowed_users
+        self.allowed_users = []
+        for user in allowed_users:
+            try:
+                jid_obj = JID(user)
+                self.allowed_users.append(jid_obj)
+            except ValueError as e:
+                logging.error(f"Invalid JID: {user} - {e}")
         self.llama_server_url = llama_server_url
         self.llm = OllamaLLM(model=config.get('llm', 'model'))
         self.prompt = config.get('llm', 'prompt')
