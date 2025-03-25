@@ -816,8 +816,11 @@ class OllamaEncrypted(ClientXMPP):
         key_data = re.search(r"-----BEGIN PGP PUBLIC KEY BLOCK-----.*?-----END PGP PUBLIC KEY BLOCK-----", user_input, re.DOTALL)
         if key_data:
             key_data = key_data.group(0)
-            key_file_path = os.path.join(self.contacts_keys_directory, f"{user_jid}.asc")
+            key_file_path = os.path.join(contacts_keys_directory, f"{user_jid}.asc")
             logging.debug(f"Extracted PGP public key: {key_data}")
+
+            # Ensure the directory exists
+            os.makedirs(os.path.dirname(key_file_path), exist_ok=True)
 
             # Check if the file already exists
             if os.path.exists(key_file_path):
@@ -826,7 +829,7 @@ class OllamaEncrypted(ClientXMPP):
             with open(key_file_path, 'w') as key_file:
                 key_file.write(key_data)
                 logging.debug(f"PGP public key saved to {key_file_path}")
-
+                
             # Read the bot's public key
             bot_public_key = self.read_bot_public_key()
             if bot_public_key:
@@ -870,8 +873,25 @@ if __name__ == "__main__":
     keys_directory = config.get('keys', 'keys_directory')
     contacts_keys_directory = config.get('keys', 'contacts_keys_directory')
     public_key_file = config.get('keys', 'public_key_file')
+    # Placeholder paths
+    PLACEHOLDER_PATHS = ['/path/to/keys', '/path/to/contact_keys']
 
+    # Define default paths
+    DEFAULT_KEYS_DIRECTORY = os.path.join(os.getcwd(), 'keys')
+    DEFAULT_CONTACTS_KEYS_DIRECTORY = os.path.join(os.getcwd(), 'contact_keys')
+
+    # Get the configuration paths, using defaults if placeholders are found
+    keys_directory = config.get('keys', 'keys_directory', fallback=DEFAULT_KEYS_DIRECTORY)
+    contacts_keys_directory = config.get('keys', 'contacts_keys_directory', fallback=DEFAULT_CONTACTS_KEYS_DIRECTORY)
+
+    # Check if the paths are placeholders and use defaults if necessary
+    if keys_directory in PLACEHOLDER_PATHS:
+        keys_directory = DEFAULT_KEYS_DIRECTORY
+
+    if contacts_keys_directory in PLACEHOLDER_PATHS:
+        contacts_keys_directory = DEFAULT_CONTACTS_KEYS_DIRECTORY
     public_key_path = os.path.join(keys_directory, public_key_file)
+    
     if jid == 'bot@example.com':
         print(f"{RED}Please adjust your 'botconfig.ini' file with your credentials.{RESET}")
         sys.exit(0)
