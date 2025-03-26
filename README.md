@@ -22,7 +22,7 @@ Ensure Python is installed on your system. You can download it from [Python.org]
 Install the required libraries using pip:
 
 ```bash
-pip install langchain_ollama slixmpp-omemo python-gnupg slixmpp==1.8.6
+pip install langchain_ollama python-gnupg slixmpp==1.8.6 slixmpp-omemo
 ```
 ## Usage
 Edit the botconfig.ini with the parameters<br>
@@ -44,8 +44,8 @@ For OpenPGP setup(Client side):
 ---
 
 ### Known issues
-This code is only tested with slixmpp 1.8.6.<br>
-As of yet you gonna need to manually create the directories for keys and contact keys.
+This code was only tested with slixmpp 1.8.6.<br>
+
 
 ### Special Thanks to
 Mr Dele Olajide https://github.com/deleolajide, who inspired me the idea of a LLM XMPP connection with his Openfire Llama plugin.<br>      
