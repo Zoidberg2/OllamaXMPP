@@ -534,7 +534,7 @@ class OllamaEncrypted(ClientXMPP):
                     encrypted_message = self.strip_pgp_headers(encrypted_message)
 
                     # Use the full JID for sending the message
-                    recipient_full_jid = mfrom.full
+                    recipient_full_jid = mfrom
 
                     msg = self.make_message(mto=recipient_full_jid, mtype=mtype)
 
