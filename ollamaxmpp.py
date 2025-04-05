@@ -244,7 +244,6 @@ class OllamaEncrypted(ClientXMPP):
         self.sent_stanza_id = None
         self.sent_message_ids = set()
         self.public_key_path = public_key_path
-        #self.key_directory = key_directory
         self.gpg = gnupg.GPG()
         self.contacts_keys_directory = contacts_keys_directory
         self.keypasswd = keypasswd
@@ -393,6 +392,7 @@ class OllamaEncrypted(ClientXMPP):
             return
         xep_0384: XEP_0384 = self["xep_0384"]
         prompt = self.prompt
+        mfrom = stanza["from"].bare
         mto = stanza["from"]
         mtype = stanza["type"]
         msg = stanza
@@ -427,45 +427,54 @@ class OllamaEncrypted(ClientXMPP):
                     room_jid = stanza["from"].bare
                     prompt += f"\nUser: {user_input}"
                     logging.debug(f"{user_input}: {prompt}")
-                    response = self.llm.invoke(prompt, config=config)
-                    if response:
-                        logging.debug("Encrypting response...")
-                        muc_room_jid = stanza["from"].bare  # Get the room JID from the 'from' attribute
-                        logging.debug("MUC room JID: %s", muc_room_jid)
+                    try:
+                        # Generate response using the AI model
+                        response = self.llm.invoke(prompt, config=config)
+                        logging.debug(f"Response generated for {mfrom}: {response}")
+                    except Exception as e:
+                        logging.error(f"Ollama did not respond: {e}")
+                        response = "Ollama did not respond. Please try again later."                    
+                    logging.debug("Encrypting response...")
+                    muc_room_jid = stanza["from"].bare  # Get the room JID from the 'from' attribute
+                    logging.debug("MUC room JID: %s", muc_room_jid)
 
-                        if self.boundjid.bare + "/" + self.boundjid.resource in self.affiliations:
-                            device_list.remove(self.boundjid.bare + "/" + self.boundjid.resource)
+                    if self.boundjid.bare + "/" + self.boundjid.resource in self.affiliations:
+                        device_list.remove(self.boundjid.bare + "/" + self.boundjid.resource)
 
-                        message = self.make_message(mto=muc_room_jid, mtype="groupchat")
-                        message["body"] = response
-                        message.set_to(muc_room_jid)
-                        message.set_from(self.boundjid)
+                    message = self.make_message(mto=muc_room_jid, mtype="groupchat")
+                    message["body"] = response
+                    message.set_to(muc_room_jid)
+                    message.set_from(self.boundjid)
 
-                        try:
-                            logging.debug("Encrypting message with xep_0384...")
-                            messages, encryption_errors = await xep_0384.encrypt_message(message, [JID(jid) for jid in self.affiliations])
-                            if len(encryption_errors) > 0:
-                                logging.warning(f"There were non-critical errors during encryption: {encryption_errors}")
+                    try:
+                        logging.debug("Encrypting message with xep_0384...")
+                        messages, encryption_errors = await xep_0384.encrypt_message(message, [JID(jid) for jid in self.affiliations])
+                        if len(encryption_errors) > 0:
+                            logging.warning(f"There were non-critical errors during encryption: {encryption_errors}")
 
-                            for namespace, encrypted_message in messages.items():
-                                encrypted_message["eme"]["namespace"] = namespace
-                                encrypted_message["eme"]["name"] = self["xep_0380"].mechanisms[namespace]
-                                encrypted_message.send()
+                        for namespace, encrypted_message in messages.items():
+                            encrypted_message["eme"]["namespace"] = namespace
+                            encrypted_message["eme"]["name"] = self["xep_0380"].mechanisms[namespace]
+                            encrypted_message.send()
 
-                                # Keep track of the stanza_id of the sent message
-                                self.sent_message_ids.add(message["id"])
-                        except Exception as e:
-                            logging.error(f"Error encrypting or sending message: {e}")
-                            logging.error(f"Exception traceback: {traceback.format_exc()}")
-                    else:
-                        logging.debug("No response from LLaMA")
+                            # Keep track of the stanza_id of the sent message
+                            self.sent_message_ids.add(message["id"])
+                    except Exception as e:
+                        logging.error(f"Error encrypting or sending message: {e}")
+                        logging.error(f"Exception traceback: {traceback.format_exc()}")
 
                 elif mtype == "chat":
                     user_input = decrypted_message.get("body", "")
                     prompt += f"\nUser: {user_input}"
                     mfrom = stanza["from"]
                     logging.debug(f"Conversation history for user {mfrom}: {prompt}")
-                    response = self.llm.invoke(prompt, config=config)
+                    try:
+                        # Generate response using the AI model
+                        response = self.llm.invoke(prompt, config=config)
+                        logging.debug(f"Response generated for {mfrom}: {response}")
+                    except Exception as e:
+                        logging.error(f"Ollama did not respond: {e}")
+                        response = "Ollama did not respond. Please try again later."
                     logging.debug(f"Sending prompt to LLaMA: {prompt}")
                     logging.debug(f"Received response from LLaMA: {response}")
                     await self.encrypted_reply(mto, mtype, response)
@@ -493,19 +502,23 @@ class OllamaEncrypted(ClientXMPP):
             logging.debug(f"user_input")
 
             mtype = stanza['type']
-            mfrom = stanza['from']
             mto = stanza['to']
 
             if mtype == "chat":
                 # Create prompt that teaches the AI to recognize its name and answer the last question
                 prompt += f"\nUser: {user_input}"
                 logging.debug(f"Sending prompt to LLaMA: {prompt}")
-
-                response = self.llm.invoke(prompt, config=config)
-                logging.debug(f"Response generated for {mfrom.bare}: {response}")
+                try:
+                    # Generate response using the AI model
+                    response = self.llm.invoke(prompt, config=config)
+                    logging.debug(f"Response generated for {mfrom}: {response}")
+                except Exception as e:
+                    logging.error(f"Ollama did not respond: {e}")
+                    response = "Ollama did not respond. Please try again later."
+                logging.debug(f"Response generated for {mfrom}: {response}")
 
                 # Get the recipient's public key file
-                recipient_bare_jid = mfrom.bare
+                recipient_bare_jid = mfrom
                 recipient_key_file = f'{self.contacts_keys_directory}/{recipient_bare_jid}.asc'
 
                 # Ensure the key file exists
@@ -545,7 +558,6 @@ class OllamaEncrypted(ClientXMPP):
                     logging.error(f"Failed to send encrypted message to {recipient_full_jid}: {e}")
 
             elif mtype == "groupchat":
-                mfrom = stanza["from"].bare
                 muc_jid = stanza["from"].bare
                 muc_room = stanza["from"].resource
 
@@ -560,8 +572,13 @@ class OllamaEncrypted(ClientXMPP):
                 # Generate the response using the AI model
                 prompt += f"\nUser: {user_input}"
                 logging.debug(f"Sending prompt to LLaMA: {prompt}")
-
-                response = self.llm.invoke(prompt, config=config)
+                try:
+                    # Generate response using the AI model
+                    response = self.llm.invoke(prompt, config=config)
+                    logging.debug(f"Response generated for {mfrom}: {response}")
+                except Exception as e:
+                    logging.error(f"Ollama did not respond: {e}")
+                    response = "Ollama did not respond. Please try again later."
                 logging.debug(f"Response generated for MUC {muc_jid}: {response}")
 
                 # Collect the public key files for all participants
@@ -636,27 +653,34 @@ class OllamaEncrypted(ClientXMPP):
                     # Create prompt that teaches the AI to recognize its name and answer the last question
                     prompt += f"\nUser: {user_input}"
                     logging.debug(f"Sending prompt to LLaMA: {prompt}")
-                    response = self.llm.invoke(prompt, config=config)
+                    try:
+                        # Generate response using the AI model
+                        response = self.llm.invoke(prompt, config=config)
+                        logging.debug(f"Response generated for {mfrom}: {response}")
+                    except Exception as e:
+                        logging.error(f"Ollama did not respond: {e}")
+                        response = "Ollama did not respond. Please try again later."                    
+                    logging.debug("Sending response unencrypted")
+                    muc_room_jid = room
+                    message = self.make_message(mto=muc_room_jid, mtype="groupchat")
+                    message["body"] = response
+                    message.set_to(muc_room_jid)
+                    message.set_from(self.boundjid)
+                    message.send()
+                    self.sent_message_ids.add(message["id"])
+                    logging.debug(f"message id: {message["id"]}")
 
-                    if response:
-                        logging.debug("Sending response unencrypted")
-                        muc_room_jid = room
-                        message = self.make_message(mto=muc_room_jid, mtype="groupchat")
-                        message["body"] = response
-                        message.set_to(muc_room_jid)
-                        message.set_from(self.boundjid)
-                        message.send()
-                        self.sent_message_ids.add(message["id"])
-                        logging.debug(f"message id: {message["id"]}")
-                    else:
-                        logging.debug("No response from LLaMA")
-                        return
                 if mtype == "chat":
-                    mfrom = stanza["from"].bare
                     user_input = stanza['body']
                     prompt += f"\nUser: {user_input}"
                     logging.debug(f"Sending prompt to LLaMA: {prompt}")
-                    response = self.llm.invoke(prompt, config=config)
+                    try:
+                        # Generate response using the AI model
+                        response = self.llm.invoke(prompt, config=config)
+                        logging.debug(f"Response generated for {mfrom}: {response}")
+                    except Exception as e:
+                        logging.error(f"Ollama did not respond: {e}")
+                        response = "Ollama did not respond. Please try again later."
                     # Send the response back to the user
                     self.plain_reply(mfrom, "chat", response)
 
