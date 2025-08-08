@@ -878,13 +878,19 @@ class OllamaEncrypted(ClientXMPP):
 
 if __name__ == "__main__":
 
+    # Get the directory where the current script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Construct the full path to the config file
+    config_path = os.path.join(script_dir, 'botconfig.ini')
+
     # Check if the configuration file exists
-    if not os.path.exists('botconfig.ini'):
+    if not os.path.exists(config_path):
         create_dummy_config()
 
     # Read the configuration file
     config = ConfigParser()
-    config.read('botconfig.ini')
+    config.read(config_path)
 
     # Extract the necessary configuration values
     jid = config.get('credentials', 'jid')
