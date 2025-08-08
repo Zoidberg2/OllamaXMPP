@@ -951,7 +951,7 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error(f"Error reading public key: {e}")
         exit(1)
-
+    logging.info("Slixmpp version is: %s", slixmpp.__version__)
     xmpp = OllamaEncrypted(jid, password, room, nick, allowed_users, openpgp_key, fingerprint)
     xmpp.register_plugin("xep_0199")  # XMPP Ping
     xmpp.register_plugin("xep_0380")  # Explicit Message Encryption
