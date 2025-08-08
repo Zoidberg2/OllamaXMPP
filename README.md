@@ -22,7 +22,7 @@ Ensure Python is installed on your system. You can download it from [Python.org]
 Install the required libraries using pip:
 
 ```bash
-pip install langchain_ollama python-gnupg slixmpp==1.8.6 slixmpp-omemo
+pip install langchain_ollama python-gnupg slixmpp slixmpp-omemo
 ```
 ## Usage
 Edit the botconfig.ini with the parameters<br>
@@ -44,7 +44,7 @@ For OpenPGP setup(Client side):
 ---
 
 ### Known issues
-This code was only tested with slixmpp 1.8.6.<br>
+This code was only tested with slixmpp versions from 1.8.6. to 1.10.0<br>
 
 
 ### Special Thanks to
